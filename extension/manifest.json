@@ -1,0 +1,179 @@
+{
+  "manifest_version": "0.3",
+  "name": "switch-remote",
+  "display_name": "Switch Remote",
+  "version": "0.2.0",
+  "description": "Lets Claude press buttons, take screenshots, move files and launch builds on your modded Switch over your network, for testing homebrew games.",
+  "long_description": "Made for testing homebrew games on a real console: Claude can drive the game with button presses, look at the screen, swap test files and pull logs back, without you copying files by hand. It talks to three things on a Switch running Atmosphere: the sys-botbase sysmodule (controller input, screenshots), the ftpsrv sysmodule (SD card files) and the homebrew menu netloader (sending and launching .nro builds and collecting their printf output). Changes on the SD card are limited to /switch.",
+  "author": {
+    "name": "mamesj",
+    "url": "https://github.com/mamesj"
+  },
+  "icon": "icon.png",
+  "server": {
+    "type": "node",
+    "entry_point": "server/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/server/index.js"
+      ],
+      "env": {
+        "SWITCH_IP": "${user_config.switch_ip}",
+        "BOTBASE_PORT": "${user_config.botbase_port}",
+        "FTP_PORT": "${user_config.ftp_port}",
+        "FTP_USER": "${user_config.ftp_user}",
+        "FTP_PASS": "${user_config.ftp_pass}",
+        "WORK_DIR": "${user_config.work_dir}",
+        "ALLOW_BUILDS": "${user_config.allow_builds}",
+        "WSL_DISTRO": "${user_config.wsl_distro}"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "switch_status",
+      "description": "Check the connection to the Switch"
+    },
+    {
+      "name": "switch_press",
+      "description": "Send a sequence of button, stick and touch inputs"
+    },
+    {
+      "name": "switch_screenshot",
+      "description": "Take a screenshot of the Switch screen"
+    },
+    {
+      "name": "switch_list_files",
+      "description": "List a folder on the SD card"
+    },
+    {
+      "name": "switch_read_file",
+      "description": "Read a file from the SD card"
+    },
+    {
+      "name": "switch_write_file",
+      "description": "Write a file to the SD card"
+    },
+    {
+      "name": "switch_move",
+      "description": "Rename or move a file or folder inside /switch"
+    },
+    {
+      "name": "switch_download_folder",
+      "description": "Copy a whole SD card folder to the PC"
+    },
+    {
+      "name": "switch_wait_for_file",
+      "description": "Wait until a file on the SD card exists or contains some text"
+    },
+    {
+      "name": "switch_run_build",
+      "description": "Run a .sh build script through WSL (opt-in)"
+    },
+    {
+      "name": "switch_build_status",
+      "description": "Check on a running build"
+    },
+    {
+      "name": "switch_launch_nro",
+      "description": "Send and launch a .nro through the homebrew menu netloader"
+    },
+    {
+      "name": "switch_read_output",
+      "description": "Read output printed by the launched homebrew"
+    },
+    {
+      "name": "switch_botbase_command",
+      "description": "Send a raw sys-botbase command"
+    }
+  ],
+  "keywords": [
+    "switch",
+    "homebrew",
+    "game-testing",
+    "sys-botbase",
+    "ftp",
+    "nxlink"
+  ],
+  "license": "MIT",
+  "user_config": {
+    "switch_ip": {
+      "type": "string",
+      "title": "Switch IP address",
+      "description": "Your Switch's IP address, from System Settings > Internet > Connection Status. Reserve it on your router so it doesn't change.",
+      "required": true
+    },
+    "ftp_user": {
+      "type": "string",
+      "title": "FTP user",
+      "description": "Must match user in /config/ftpsrv/config.ini on the SD card.",
+      "default": "switch",
+      "required": true
+    },
+    "ftp_pass": {
+      "type": "string",
+      "title": "FTP password",
+      "description": "Must match pass in /config/ftpsrv/config.ini on the SD card (build-sysmodules.sh prints it).",
+      "sensitive": true,
+      "required": true
+    },
+    "ftp_port": {
+      "type": "number",
+      "title": "FTP port",
+      "description": "Port in /config/ftpsrv/config.ini.",
+      "default": 5000,
+      "min": 1,
+      "max": 65535,
+      "required": false
+    },
+    "botbase_port": {
+      "type": "number",
+      "title": "sys-botbase port",
+      "description": "sys-botbase always listens on 6000.",
+      "default": 6000,
+      "min": 1,
+      "max": 65535,
+      "required": false
+    },
+    "work_dir": {
+      "type": "directory",
+      "title": "Work folder",
+      "description": "Builds are sent from here and downloads, screenshots and logs are saved here. Nothing outside it is read or written.",
+      "default": "${HOME}/Documents",
+      "required": false
+    },
+    "allow_builds": {
+      "type": "boolean",
+      "title": "Allow build scripts",
+      "description": "Lets Claude run .sh build scripts from the work folder through WSL, so it can rebuild before a test round. Off by default.",
+      "default": false,
+      "required": false
+    },
+    "wsl_distro": {
+      "type": "string",
+      "title": "WSL distro for builds",
+      "description": "The WSL distro the build scripts run in (see wsl -l).",
+      "default": "Ubuntu",
+      "required": false
+    }
+  },
+  "compatibility": {
+    "claude_desktop": ">=0.10.0",
+    "platforms": [
+      "win32",
+      "darwin",
+      "linux"
+    ],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  },
+  "privacy_policies": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mamesj/switch-remote"
+  },
+  "homepage": "https://github.com/mamesj/switch-remote",
+  "support": "https://github.com/mamesj/switch-remote/issues"
+}

@@ -1,0 +1,38 @@
+diff --git a/src/platform/nx/main_sysmod.c b/src/platform/nx/main_sysmod.c
+index ed03578..3fc6d2a 100644
+--- a/src/platform/nx/main_sysmod.c
++++ b/src/platform/nx/main_sysmod.c
+@@ -209,7 +209,6 @@ void __appInit(void) {
+     if (R_FAILED(rc = setInitialize()))
+         diagAbortWithResult(rc);
+ 
+-    hidsysInitialize();
+     __libnx_init_time();
+ }
+ 
+@@ -217,7 +216,6 @@ void __appInit(void) {
+ void __appExit(void) {
+     vfs_nx_exit();
+     log_file_exit();
+-    hidsysExit();
+     setExit();
+     ncmExit();
+     accountExit();
+diff --git a/src/platform/nx/utils.c b/src/platform/nx/utils.c
+index aec0a35..8caca03 100644
+--- a/src/platform/nx/utils.c
++++ b/src/platform/nx/utils.c
+@@ -207,6 +207,7 @@ void led_flash(void) {
+     s32 total;
+     HidsysUniquePadId unique_pad_id;
+ 
++    if (R_FAILED(hidsysInitialize())) return;
+     rc = hidsysGetUniquePadsFromNpad(HidNpadIdType_Handheld, &unique_pad_id, 1, &total);
+     if (R_SUCCEEDED(rc) && total) {
+         rc = hidsysSetNotificationLedPattern(&pattern, unique_pad_id);
+@@ -218,4 +219,5 @@ void led_flash(void) {
+             hidsysSetNotificationLedPattern(&pattern, unique_pad_id);
+         }
+     }
++    hidsysExit();
+ }

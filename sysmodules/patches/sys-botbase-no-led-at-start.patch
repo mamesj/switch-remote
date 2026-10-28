@@ -1,0 +1,13 @@
+diff --git a/sys-botbase/source/main.c b/sys-botbase/source/main.c
+index 92e6283..f779dd4 100644
+--- a/sys-botbase/source/main.c
++++ b/sys-botbase/source/main.c
+@@ -1023,7 +1023,7 @@ int main()
+     if (R_SUCCEEDED(rc))
+         rc = threadStart(&clickThread);
+ 
+-    flashLed();
++    // flashLed(); off: no hid session at start-up
+ 
+     while (true)
+     {
